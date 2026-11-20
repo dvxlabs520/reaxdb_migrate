@@ -1,0 +1,71 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    name: Flutter ${{ matrix.flutter }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # The current stable release and the one before it.
+        flutter: ['3.50.1', '3.47.9']
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: ${{ matrix.flutter }}
+          cache: true
+
+      # reaxdb_dart comes from pub.dev, exactly as it does for users.
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Check formatting
+        run: dart format --output=none --set-exit-if-changed lib test example
+
+      - name: Analyze
+        run: flutter analyze --fatal-infos
+
+      - name: Test
+        run: flutter test
+
+      - name: Check the package can be published
+        run: flutter pub publish --dry-run
+
+  # Catches breaking changes in reaxdb_dart before they are released, and
+  # keeps this CI useful while a new reaxdb_dart version is not on pub.dev.
+  against-reaxdb-main:
+    name: Flutter 3.50.1 / reaxdb_dart main
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: '3.50.1'
+          cache: true
+
+      # Cloned next to this repository, as in local development, so it is
+      # not analyzed as part of this package.
+      - name: Use reaxdb_dart from Reax-BD main
+        run: |
+          git clone --depth 1 https://github.com/dvxlabs520/Reax-BD.git ../Reax-BD
+          printf 'dependency_overrides:\n  reaxdb_dart:\n    path: ../Reax-BD\n' > pubspec_overrides.yaml
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Analyze
+        run: flutter analyze --fatal-infos
+
+      - name: Test
+        run: flutter test
+

@@ -1,0 +1,37 @@
+name: reaxdb_migrate
+description: "Move your data from Hive or SharedPreferences into ReaxDB, any size, with progress, verification and a report. Add it for the migration, remove it after."
+version: 0.1.0
+homepage: https://github.com/dvxlabs520/reaxdb_migrate
+repository: https://github.com/dvxlabs520/reaxdb_migrate
+issue_tracker: https://github.com/dvxlabs520/reaxdb_migrate/issues
+
+topics:
+  - hive
+  - migration
+  - shared-preferences
+  - database
+  - storage
+
+environment:
+  sdk: '>=3.12.0 <4.0.0'
+  flutter: '>=3.47.0'
+
+platforms:
+  android:
+  ios:
+  linux:
+  macos:
+  windows:
+
+dependencies:
+  flutter:
+    sdk: flutter
+  hive_ce: ^2.22.0
+  reaxdb_dart: ^2.7.0
+  shared_preferences: ^2.5.3
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  shared_preferences_platform_interface: ^2.4.1

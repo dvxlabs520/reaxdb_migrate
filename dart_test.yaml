@@ -1,0 +1,4 @@
+tags:
+  # Migrates a million entries. Run with: flutter test --tags large
+  large:
+    skip: "Long. Run with --tags large."
